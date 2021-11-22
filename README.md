@@ -313,10 +313,11 @@ aws ec2 run-instances \
     --key-name $KEY_NAME \
     --security-groups $SECURITY_GROUP_FRONTEND \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_LOAD_BALANCER}]"
+    --user-data sudo apt purge -y mssql* msodbc*
 ```
 Como vemos en el siguiente ejemplo el primer paso es indicar la orden de crear una instancia y como parámetros le indicamos la ID de la AMI a utilizar, el numero de instancias a crear en la misma orden, el tipo de arquitectura a utilizar, la clave pem para acceder a dicha instancia, el grupo de seguridad que va a utilizar y el nombre cone el cual lo identificaremos.
 
-Y para la orden de la creacion de una instnacia BackEnd tenemos exactamente lo mismo exceptuando la ultima linea:
+Y para la orden de la creacion de una instnacia BackEnd tenemos exactamente lo mismo:
 ```
 aws ec2 run-instances \
     --image-id $AMI_ID \
@@ -328,7 +329,7 @@ aws ec2 run-instances \
     --user-data sudo apt purge -y mssql* msodbc*
 ```
 
-El parametro `--user-data` sirve para pasar ordenes al prompt de nuestra instancia, en el que indicamos que borre todo tipo de archivo relacionado con MariaDB o MySQL.
+El parametro `--user-data` sirve para pasar ordenes al prompt de nuestra instancia, en el que indicamos que borre todo tipo de archivo relacionado con MariaDB o MySQL para poder dejar nuestra instancia Ubuntu 20.04 para poder tener nuestra AMI totalmente limpia.
 
 ## Creación y asociación de Dirección IP Elástica `05-create_elastic_ip.sh`
 ```
