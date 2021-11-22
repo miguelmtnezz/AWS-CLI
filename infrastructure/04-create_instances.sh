@@ -19,6 +19,8 @@ INSTANCE_NAME_FRONTEND_01=frontend-01
 INSTANCE_NAME_FRONTEND_02=frontend-02
 INSTANCE_NAME_BACKEND=backend
 
+BOOT_COMMAND="apt purge -y mssql* msodbc*"
+
 # Creamos una intancia EC2 para el balanceador de carga
 aws ec2 run-instances \
     --image-id $AMI_ID \
@@ -26,7 +28,8 @@ aws ec2 run-instances \
     --instance-type $INSTANCE_TYPE \
     --key-name $KEY_NAME \
     --security-groups $SECURITY_GROUP_FRONTEND \
-    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_LOAD_BALANCER}]"
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_LOAD_BALANCER}]" \
+    --user-data "$BOOT_COMMAND"
 
 # Creamos una intancia EC2 para el frontend-01
 aws ec2 run-instances \
@@ -35,7 +38,8 @@ aws ec2 run-instances \
     --instance-type $INSTANCE_TYPE \
     --key-name $KEY_NAME \
     --security-groups $SECURITY_GROUP_FRONTEND \
-    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_FRONTEND_01}]"
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_FRONTEND_01}]" \
+    --user-data "$BOOT_COMMAND"
 
 # Creamos una intancia EC2 para el frontend-02
 aws ec2 run-instances \
@@ -44,7 +48,8 @@ aws ec2 run-instances \
     --instance-type $INSTANCE_TYPE \
     --key-name $KEY_NAME \
     --security-groups $SECURITY_GROUP_FRONTEND \
-    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_FRONTEND_02}]"
+    --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_FRONTEND_02}]" \
+    --user-data "$BOOT_COMMAND"
 
 # Creamos una intancia EC2 para el backend
 aws ec2 run-instances \
@@ -54,4 +59,4 @@ aws ec2 run-instances \
     --key-name $KEY_NAME \
     --security-groups $SECURITY_GROUP_BACKEND \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE_NAME_BACKEND}]" \
-    --user-data sudo apt purge -y mssql* msodbc*
+    --user-data "$BOOT_COMMAND"
